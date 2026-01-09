@@ -1,0 +1,23 @@
+# System Files
+.DS_Store
+.env
+.generated
+.gemini
+
+# Dependencies
+node_modules/
+dist/
+build/
+venv/
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Legacy Backend Program
+backend-programlama/
+
+# Logs
+*.log

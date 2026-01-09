@@ -1,0 +1,110 @@
+:root {
+  /* Color Palette inspired by myBCA */
+  --primary-blue: #00529C;    /* Biru BCA Tua */
+  --secondary-blue: #0085CA;  /* Biru BCA Muda */
+  --accent-blue: #E1F4FF;     /* Biru Sangat Muda (Backgrounds) */
+  --dark-text: #1F2937;       /* Hitam Elegan (bukan #000) */
+  --gray-text: #6B7280;       /* Abu-abu untuk label */
+  --white: #FFFFFF;
+  --danger: #EF4444;
+  --success: #10B981;
+  
+  /* Spacing & Radius */
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 82, 156, 0.15); /* Shadow biru tipis */
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #F3F4F6;
+  color: var(--dark-text);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 480px; /* Mobile-app look on desktop */
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: var(--white);
+  box-shadow: 0 0 40px rgba(0,0,0,0.05);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+  color: white;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+  font-size: 1rem;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background-color: var(--accent-blue);
+  color: var(--primary-blue);
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: var(--radius-md);
+  background-color: #F9FAFB;
+  font-size: 1rem;
+  margin-bottom: 16px;
+  box-sizing: border-box; 
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--secondary-blue);
+  background-color: var(--white);
+}
+
+.page-header {
+  background: var(--primary-blue);
+  color: white;
+  padding: 24px 20px;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}

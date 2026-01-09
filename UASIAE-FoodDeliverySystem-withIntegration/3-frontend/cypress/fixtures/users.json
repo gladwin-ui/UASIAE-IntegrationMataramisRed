@@ -1,0 +1,20 @@
+{
+  "customer1": {
+    "name": "Customer One",
+    "email": "customer1@example.com",
+    "password": "Password123!",
+    "phone": "081234567893",
+    "role": "CUSTOMER"
+  },
+  "invalidUser": {
+    "email": "wrong@example.com",
+    "password": "wrongpassword"
+  },
+  "newUser": {
+    "name": "New Test User",
+    "email": "newtestuser@example.com",
+    "password": "Password123!",
+    "phone": "081234567999"
+  }
+}
+

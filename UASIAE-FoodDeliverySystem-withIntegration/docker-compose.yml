@@ -1,0 +1,147 @@
+version: '3.8'
+
+services:
+  # --- DATABASES ---
+  user_db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=user_service_db
+    networks:
+      - shared-network
+
+  restaurant_db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=restaurant_service_db
+    networks:
+      - shared-network
+
+  order_db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=order_service_db
+    networks:
+      - shared-network
+
+  payment_db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=payment_service_db
+    networks:
+      - shared-network
+
+  driver_db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=driver_service_db
+    networks:
+      - shared-network
+
+  # --- BACKEND SERVICES ---
+  user-service:
+    build: ./user-service
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@user_db:3306/user_service_db
+      - SECRET_KEY=kunci_rahasia_project_ini_harus_sama_semua
+      - ALGORITHM=HS256
+      - X_SECRET_KEY=${X_SECRET_KEY}
+    volumes:
+      - ./user-service:/app
+    depends_on:
+      - user_db
+    networks:
+      - shared-network
+    ports:
+      - "4001:8000"
+
+  restaurant-service:
+    build: ./restaurant-service
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@restaurant_db:3306/restaurant_service_db
+    volumes:
+      - ./restaurant-service:/app
+    depends_on:
+      - restaurant_db
+    networks:
+      - shared-network
+    ports:
+      - "4002:8000"
+
+  order-service:
+    build: ./order-service
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@order_db:3306/order_service_db
+      - SECRET_KEY=kunci_rahasia_project_ini_harus_sama_semua
+      - ALGORITHM=HS256
+    volumes:
+      - ./order-service:/app
+    depends_on:
+      - order_db
+    networks:
+      - shared-network
+    ports:
+      - "4003:8000"
+
+  payment-service:
+    build: ./payment-service
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@payment_db:3306/payment_service_db
+      - SECRET_KEY=kunci_rahasia_project_ini_harus_sama_semua
+      - ALGORITHM=HS256
+      - X_SECRET_KEY=${X_SECRET_KEY}
+    volumes:
+      - ./payment-service:/app
+    depends_on:
+      - payment_db
+    networks:
+      - shared-network
+    ports:
+      - "4004:8000"
+
+  driver-service:
+    build: ./driver-service
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@driver_db:3306/driver_service_db
+      - SECRET_KEY=kunci_rahasia_project_ini_harus_sama_semua
+      - ALGORITHM=HS256
+    volumes:
+      - ./driver-service:/app
+    depends_on:
+      - driver_db
+    networks:
+      - shared-network
+    ports:
+      - "4005:8000"
+
+  # --- API GATEWAY (PORT 4000) ---
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "4000:3000"
+    depends_on:
+      - user-service
+      - restaurant-service
+      - order-service
+      - payment-service
+      - driver-service
+    networks:
+      - shared-network
+
+  # --- FRONTEND ---
+  frontend:
+    build: ./3-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    external: true

@@ -1,0 +1,141 @@
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: doswallet-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: doswallet123
+      # Multiple databases and users will be created by init scripts mounted below
+    ports:
+      - "3310:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - shared-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pdoswallet123" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Frontend Web
+  frontend-web:
+    build:
+      context: ./frontend-web
+    container_name: doswallet-frontend
+    ports:
+      - "3001:3000"
+    networks:
+      - shared-network
+    restart: unless-stopped
+
+  # User Service
+  dw-user-service:
+    build:
+      context: ./backend
+      dockerfile: user-service/Dockerfile
+    container_name: doswallet-user-service
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: dos_user
+      DB_PASSWORD: dos_user_pass
+      DB_NAME: doswallet_user_db
+      DB_POOL_SIZE: 5
+      JWT_SECRET: kunci_rahasia_project_ini_harus_sama_semua  # Aligned with FDS
+      USER_SERVICE_PORT: 5001
+      CORS_ORIGINS: "*"
+    ports:
+      - "5001:5001"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - shared-network
+    restart: unless-stopped
+
+  # Wallet Service
+  dw-wallet-service:
+    build:
+      context: ./backend
+      dockerfile: wallet-service/Dockerfile
+    container_name: doswallet-wallet-service
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: dos_wallet
+      DB_PASSWORD: dos_wallet_pass
+      DB_NAME: doswallet_wallet_db
+      DB_POOL_SIZE: 8
+      JWT_SECRET: kunci_rahasia_project_ini_harus_sama_semua  # Aligned with FDS
+      WALLET_SERVICE_PORT: 5002
+      CORS_ORIGINS: "*"
+      X_SECRET_KEY: ${X_SECRET_KEY}
+    ports:
+      - "5002:5002"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - shared-network
+    restart: unless-stopped
+
+  # Transaction Service
+  dw-transaction-service:
+    build:
+      context: ./backend
+      dockerfile: transaction-service/Dockerfile
+    container_name: doswallet-transaction-service
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: dos_tx
+      DB_PASSWORD: dos_tx_pass
+      DB_NAME: doswallet_transaction_db
+      DB_POOL_SIZE: 12
+      JWT_SECRET: kunci_rahasia_project_ini_harus_sama_semua  # Aligned with FDS
+      TRANSACTION_SERVICE_PORT: 5003
+      CORS_ORIGINS: "*"
+      X_SECRET_KEY: ${X_SECRET_KEY}
+    ports:
+      - "5003:5003"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - shared-network
+    restart: unless-stopped
+
+  # Notification Service
+  dw-notification-service:
+    build:
+      context: ./backend
+      dockerfile: notification-service/Dockerfile
+    container_name: doswallet-notification-service
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: dos_notify
+      DB_PASSWORD: dos_notify_pass
+      DB_NAME: doswallet_notification_db
+      DB_POOL_SIZE: 3
+      JWT_SECRET: doswallet-secret-key-change-in-production
+      NOTIFICATION_SERVICE_PORT: 5004
+      CORS_ORIGINS: "*"
+    ports:
+      - "5004:5004"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - shared-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+
+networks:
+  shared-network:
+    external: true

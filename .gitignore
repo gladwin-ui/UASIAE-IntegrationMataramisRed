@@ -1,0 +1,211 @@
+# ===================================
+# UASIAE Project .gitignore
+# ===================================
+
+# ===================================
+# Node.js & JavaScript
+# ===================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnp
+.pnp.js
+
+# Next.js / React build outputs
+.next/
+out/
+build/
+dist/
+
+# ===================================
+# Python
+# ===================================
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+.env.local
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ===================================
+# Database Files
+# ===================================
+*.db
+*.sqlite
+*.sqlite3
+*.sql.backup
+*.dump
+
+# ===================================
+# Docker
+# ===================================
+# Exclude large Docker volumes (keep compose files)
+docker-compose.override.yml
+*.log
+
+# ===================================
+# IDE & Editors
+# ===================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs (PyCharm, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+.idea_modules/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ===================================
+# OS Generated Files
+# ===================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===================================
+# Logs & Temporary Files
+# ===================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pids
+*.pid
+*.seed
+*.pid.lock
+.tmp/
+tmp/
+temp/
+
+# ===================================
+# Environment Variables
+# ===================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===================================
+# Testing & Coverage
+# ===================================
+coverage/
+.nyc_output/
+cypress/videos/
+cypress/screenshots/
+
+# ===================================
+# Documentation (Large Files)
+# ===================================
+# Keep .docx files but ignore if too large
+# Uncomment line below if docx files are too big:
+# *.docx
+*.pdf
+# Alternatively, keep only specific documentation files
+# !Laporan*.pdf
+
+# ===================================
+# Backup Files
+# ===================================
+*.bak
+*.backup
+*.swp
+*.swo
+*~
+
+# ===================================
+# Large Binary Files
+# ===================================
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# ===================================
+# Frontend Build Artifacts
+# ===================================
+3-frontend/build/
+3-frontend/dist/
+frontend-web/build/
+frontend-web/dist/
+
+# ===================================
+# Legacy Backend (Optional - Uncomment if not needed)
+# ===================================
+# backend-programlama/
+
+# ===================================
+# Git Submodules (if any)
+# ===================================
+.git/
+.gitmodules
+
+# ===================================
+# Miscellaneous
+# ===================================
+*.orig
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache

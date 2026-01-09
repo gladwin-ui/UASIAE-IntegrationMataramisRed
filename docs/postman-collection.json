@@ -1,0 +1,1286 @@
+{
+	"info": {
+		"_postman_id": "food-delivery-uts-collection",
+		"name": "Food Delivery System - UTS EAI Collection",
+		"description": "Postman Collection untuk Food Delivery System dengan 5 Services (User, Restaurant, Order, Payment, Driver) sesuai requirement UTS IAE/EAI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. API Gateway",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "Health check endpoint untuk API Gateway"
+					}
+				},
+				{
+					"name": "Root",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": ["{{base_url}}"],
+							"path": [""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. User Service",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Register",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 201) {",
+											"    const jsonData = pm.response.json();",
+											"    if (jsonData.token) {",
+											"        pm.environment.set('auth_token', jsonData.token);",
+											"    }",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"081234567890\",\n  \"role\": \"customer\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/auth/register",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "auth", "register"]
+								},
+								"description": "Register user baru"
+							}
+						},
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 200) {",
+											"    const jsonData = pm.response.json();",
+											"    if (jsonData.token) {",
+											"        pm.environment.set('auth_token', jsonData.token);",
+											"        pm.environment.set('user_id', jsonData.user.id);",
+											"        pm.environment.set('user_role', jsonData.user.role);",
+											"    }",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/auth/login",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "auth", "login"]
+								},
+								"description": "Login user dan mendapatkan JWT token"
+							}
+						}
+					]
+				},
+				{
+					"name": "Profile",
+					"item": [
+						{
+							"name": "Get Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/profile",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "profile"]
+								},
+								"description": "Get user profile (requires authentication)"
+							}
+						}
+					]
+				},
+				{
+					"name": "Addresses",
+					"item": [
+						{
+							"name": "Get Addresses",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/addresses",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "addresses"]
+								}
+							}
+						},
+						{
+							"name": "Create Address",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"label\": \"Rumah\",\n  \"full_address\": \"Jl. Contoh No. 123, Jakarta\",\n  \"is_default\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/addresses",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "addresses"]
+								}
+							}
+						},
+						{
+							"name": "Update Address",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"label\": \"Kantor\",\n  \"full_address\": \"Jl. Kantor No. 456, Jakarta\",\n  \"is_default\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/users/addresses/:id",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "addresses", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							}
+						},
+						{
+							"name": "Delete Address",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/addresses/:id",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "addresses", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "Get All Users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/users/admin/all",
+									"host": ["{{base_url}}"],
+									"path": ["api", "users", "admin", "all"]
+								},
+								"description": "Get all users (admin only)"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "3. Restaurant Service",
+			"item": [
+				{
+					"name": "Public",
+					"item": [
+						{
+							"name": "Get All Restaurants",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/restaurants?cuisine_type=Padang",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants"],
+									"query": [
+										{
+											"key": "cuisine_type",
+											"value": "Padang",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Get all restaurants (public, no auth required)"
+							}
+						},
+						{
+							"name": "Get Restaurant Menu",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/restaurants/:id/menu",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants", ":id", "menu"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Get menu items for a restaurant (public)"
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin - Restaurants",
+					"item": [
+						{
+							"name": "Create Restaurant",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Restoran Baru",
+											"type": "text"
+										},
+										{
+											"key": "cuisine_type",
+											"value": "Padang",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "Jl. Contoh No. 123",
+											"type": "text"
+										},
+										{
+											"key": "is_open",
+											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/restaurants",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants"]
+								},
+								"description": "Create new restaurant (admin only)"
+							}
+						},
+						{
+							"name": "Update Restaurant",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Restoran Updated",
+											"type": "text"
+										},
+										{
+											"key": "cuisine_type",
+											"value": "Jawa",
+											"type": "text"
+										},
+										{
+											"key": "address",
+											"value": "Jl. Updated No. 456",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/restaurants/:id",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Update restaurant (admin only)"
+							}
+						},
+						{
+							"name": "Delete Restaurant",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/restaurants/:id",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "16"
+										}
+									]
+								},
+								"description": "Delete restaurant (admin only)"
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin - Menu Items",
+					"item": [
+						{
+							"name": "Create Menu Item",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Nasi Goreng Spesial",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Nasi goreng dengan telur dan ayam",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "25000",
+											"type": "text"
+										},
+										{
+											"key": "stock",
+											"value": "50",
+											"type": "text"
+										},
+										{
+											"key": "category",
+											"value": "Makanan",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/restaurants/:id/menu",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants", ":id", "menu"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Create menu item for restaurant (admin only)"
+							}
+						},
+						{
+							"name": "Update Menu Item",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Nasi Goreng Updated",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "30000",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/restaurants/menu-items/:id",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants", "menu-items", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Update menu item (admin only)"
+							}
+						},
+						{
+							"name": "Delete Menu Item",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/restaurants/menu-items/:id",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants", "menu-items", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "73"
+										}
+									]
+								},
+								"description": "Delete menu item (admin only)"
+							}
+						},
+						{
+							"name": "Update Stock",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"stock\": 100\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/restaurants/menu-items/:id/stock",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants", "menu-items", ":id", "stock"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Update menu item stock (admin only)"
+							}
+						},
+						{
+							"name": "Update Availability",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/restaurants/menu-items/:id/availability",
+									"host": ["{{base_url}}"],
+									"path": ["api", "restaurants", "menu-items", ":id", "availability"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Toggle menu item availability (admin only)"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "4. Order Service",
+			"item": [
+				{
+					"name": "Customer",
+					"item": [
+						{
+							"name": "Create Order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"restaurant_id\": 1,\n  \"address_id\": 1,\n  \"items\": [\n    {\n      \"menu_item_id\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"menu_item_id\": 2,\n      \"quantity\": 1\n    }\n  ]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/orders",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders"]
+								},
+								"description": "Create new order (customer)"
+							}
+						},
+						{
+							"name": "Get My Orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders"]
+								},
+								"description": "Get all orders for current user (customer)"
+							}
+						},
+						{
+							"name": "Get Order By ID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/:id",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", ":id"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Get order details by ID (customer)"
+							}
+						}
+					]
+				},
+				{
+					"name": "Driver",
+					"item": [
+						{
+							"name": "Get Available Orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/available",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", "available"]
+								},
+								"description": "Get available orders for driver (driver only)"
+							}
+						},
+						{
+							"name": "Get My Orders (Driver)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/driver/my-orders",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", "driver", "my-orders"]
+								},
+								"description": "Get orders assigned to current driver (driver only)"
+							}
+						},
+						{
+							"name": "Accept Order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/:id/accept",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", ":id", "accept"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Accept order (driver only)"
+							}
+						},
+						{
+							"name": "Complete Order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/:id/complete",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", ":id", "complete"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Mark order as completed (driver only)"
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "Get All Orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/admin/all",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", "admin", "all"]
+								},
+								"description": "Get all orders (admin only)"
+							}
+						},
+						{
+							"name": "Get Dashboard Stats",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/admin/dashboard/stats",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", "admin", "dashboard", "stats"]
+								},
+								"description": "Get dashboard statistics (admin only)"
+							}
+						},
+						{
+							"name": "Get Sales Statistics",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/admin/sales/statistics",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", "admin", "sales", "statistics"]
+								},
+								"description": "Get sales statistics (admin only)"
+							}
+						},
+						{
+							"name": "Get Restaurant Sales",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/orders/admin/sales/restaurants",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", "admin", "sales", "restaurants"]
+								},
+								"description": "Get restaurant sales statistics (admin only)"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "5. Payment Service",
+			"item": [
+				{
+					"name": "Simulate Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"order_id\": 1,\n  \"payment_id\": 1,\n  \"payment_method\": \"credit_card\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/payments/simulate",
+							"host": ["{{base_url}}"],
+							"path": ["api", "payments", "simulate"]
+						},
+						"description": "Simulate payment (customer)"
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Driver Service",
+			"item": [
+				{
+					"name": "Driver Profile",
+					"item": [
+						{
+							"name": "Get Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/drivers/profile",
+									"host": ["{{base_url}}"],
+									"path": ["api", "drivers", "profile"]
+								},
+								"description": "Get driver profile (driver only)"
+							}
+						},
+						{
+							"name": "Update Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"license_number\": \"SIM123456\",\n  \"vehicle_type\": \"Motor\",\n  \"vehicle_number\": \"B1234XYZ\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/drivers/profile",
+									"host": ["{{base_url}}"],
+									"path": ["api", "drivers", "profile"]
+								},
+								"description": "Update driver profile (driver only)"
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "Get All Drivers",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/drivers/admin/all",
+									"host": ["{{base_url}}"],
+									"path": ["api", "drivers", "admin", "all"]
+								},
+								"description": "Get all drivers (admin only)"
+							}
+						},
+						{
+							"name": "Get Driver Salaries",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/drivers/admin/salaries",
+									"host": ["{{base_url}}"],
+									"path": ["api", "drivers", "admin", "salaries"]
+								},
+								"description": "Get all driver salaries (admin only)"
+							}
+						},
+						{
+							"name": "Create Salary",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"driver_id\": 1,\n  \"amount\": 500000,\n  \"period\": \"2024-01\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/drivers/admin/salaries",
+									"host": ["{{base_url}}"],
+									"path": ["api", "drivers", "admin", "salaries"]
+								},
+								"description": "Create driver salary (admin only)"
+							}
+						},
+						{
+							"name": "Update Salary Status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"PAID\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/drivers/admin/salaries/:id/status",
+									"host": ["{{base_url}}"],
+									"path": ["api", "drivers", "admin", "salaries", ":id", "status"],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Update salary status (admin only)"
+							}
+						},
+						{
+							"name": "Mark Earnings as Paid",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/drivers/admin/salaries/mark-as-paid/:driverId",
+									"host": ["{{base_url}}"],
+									"path": ["api", "drivers", "admin", "salaries", "mark-as-paid", ":driverId"],
+									"variable": [
+										{
+											"key": "driverId",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Mark driver earnings as paid (admin only)"
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
