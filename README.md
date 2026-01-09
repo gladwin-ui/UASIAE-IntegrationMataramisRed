@@ -932,5 +932,5 @@ Project **UASIAE - Integrated Food Delivery System & DosWallet Payment** adalah 
 
 **Generated:** 2026-01-09  
 **Team:** Kelompok Mataram Is Red  
-**Institution:** Universitas Atma Jaya Makassar  
+**Institution:** Universitas Telkom - Sistem Informasi 2023
 **Course:** Integrasi Aplikasi Enterprise (IAE)

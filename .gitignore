@@ -160,7 +160,6 @@ cypress/screenshots/
 # Keep .docx files but ignore if too large
 # Uncomment line below if docx files are too big:
 # *.docx
-*.pdf
 # Alternatively, keep only specific documentation files
 # !Laporan*.pdf
 
